@@ -5,13 +5,21 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import com.teamellipsis.dynamic.DynamicApp
+import dalvik.system.DexClassLoader
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.ObjectOutputStream
 
 class MainActivity : AppCompatActivity() {
 //    var fileContent: String? = null
 //    var projectPath: String? = null
     var fileSystem: FileSystem? = null
+
 //    var nodeThread: Thread? = null
 //    var projectThread: Thread? = null
 //    var webViewUrl: String? = null
@@ -60,4 +68,5 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
 }

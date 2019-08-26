@@ -18,6 +18,12 @@ import android.os.AsyncTask
 import android.os.Environment
 import android.support.v4.content.FileProvider
 import android.support.v7.app.AlertDialog
+import android.widget.Toast
+import com.teamellipsis.dynamic.DynamicApp
+import dalvik.system.DexClassLoader
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.ObjectOutputStream
 import java.util.*
 
 class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
@@ -26,7 +32,8 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
     private var listFiles: MutableList<File> = mutableListOf<File>()
     lateinit var fileSystem: FileSystem
     lateinit var context: Context
-
+    lateinit var obj : DynamicApp
+    lateinit var st : ServerThred
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_app_management)
@@ -54,26 +61,6 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
 
 
 
-
-//        if (appConfig.get(AppConstant.KEY_NODE_MODULES_DIR).isEmpty()) {
-//            var assetsThread = Thread(Runnable {
-//                val date = Date()
-//                val time = date.getTime()
-//                Log.i("App-Migratory-Platform", "start: " + time.toString())
-//
-//                val str = fileSystem.copyAssetsToFilesDir()
-//
-//                val date1 = Date()
-//                val time1 = date1.getTime()
-//                Log.i("App-Migratory-Platform", "end: " + time1.toString())
-//                Log.i("App-Migratory-Platform", "diff: " + (time1 - time).toString())
-//
-//                appConfig.set(AppConstant.KEY_NODE_MODULES_DIR, str)
-//
-//                Log.i("App-Migratory-Platform", str)
-//            })
-//            assetsThread.start()
-//        }
     }
 
     override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -154,6 +141,12 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
     }
 
     fun openApp(filePath: File) {
+        obj=serialize()
+        Toast.makeText(applicationContext,"Object loaded sucessfully", Toast.LENGTH_LONG).show()
+        this.st = ServerThred("state data",obj)
+        st!!.run()
+        val intent = Intent(applicationContext, BrowserActivity::class.java)
+        startActivity(intent)
 //        Log.i("App-Migratory-Platform", filePath.absolutePath + "/server.js")
 //        var projectThread = Thread(Runnable {
 //            var nativeClient = NativeClient()
@@ -254,6 +247,37 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
             checkStatusCodeAndResend(result)
 //            showDialog("Downloaded $result bytes".toInt())
         }
+    }
+
+    fun dex_loader(): DexClassLoader {
+        val folder1 = Environment.getExternalStorageDirectory()
+        val myFile1 = File(folder1, "/fyp/dm.dex")
+        val getDirectoryPath = myFile1.getAbsolutePath()
+        return DexClassLoader(getDirectoryPath, cacheDir.absolutePath, null, classLoader)
+    }
+
+    fun serialize() : DynamicApp {
+        val folder1 = Environment.getExternalStorageDirectory()
+        val myFile1 = File(folder1, "/fyp/employee.ser")
+        val fileIn = FileInputStream(myFile1)
+        val obl = ObjectInputStreamWithLoader(fileIn, dex_loader())
+        val e1 = obl.readObject() as DynamicApp
+        obl.close()
+        val arr6 = arrayOf("0", "test1", "test_task", "2001-2-21")
+//        e1.execute(arr6)
+//        e1.execute(arr6)
+//        fileIn.close()
+        return e1
+    }
+    fun saveobject(){
+        val folder1 = Environment.getExternalStorageDirectory()
+        val myFile1 = File(folder1, "/fyp/out/employee.ser")
+        val fileOut = FileOutputStream(myFile1)
+        val out = ObjectOutputStream(fileOut)
+        out.writeObject(obj)
+        out.close()
+        fileOut.close()
+
     }
 
 }
