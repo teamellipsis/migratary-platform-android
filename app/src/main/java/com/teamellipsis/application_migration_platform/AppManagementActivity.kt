@@ -251,7 +251,7 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
 
     fun dex_loader(): DexClassLoader {
         val folder1 = Environment.getExternalStorageDirectory()
-        val myFile1 = File(folder1, "/fyp/dx.dex")
+        val myFile1 = File(folder1, "/fyp/dm.dex")
         val getDirectoryPath = myFile1.getAbsolutePath()
         return DexClassLoader(getDirectoryPath, cacheDir.absolutePath, null, classLoader)
     }
