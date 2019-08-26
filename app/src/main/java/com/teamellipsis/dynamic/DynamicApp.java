@@ -8,7 +8,5 @@ public interface DynamicApp extends Serializable {
 
     void fetchState(Object[] state);
 
-    Object execute(Object[] args);
-
     Object[] saveState();
 }
