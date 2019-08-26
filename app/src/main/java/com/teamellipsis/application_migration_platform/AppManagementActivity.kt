@@ -251,14 +251,14 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
 
     fun dex_loader(): DexClassLoader {
         val folder1 = Environment.getExternalStorageDirectory()
-        val myFile1 = File(folder1, "/fyp/dm.dex")
+        val myFile1 = File(folder1, "/fyp/dx.dex")
         val getDirectoryPath = myFile1.getAbsolutePath()
         return DexClassLoader(getDirectoryPath, cacheDir.absolutePath, null, classLoader)
     }
 
     fun serialize() : DynamicApp {
         val folder1 = Environment.getExternalStorageDirectory()
-        val myFile1 = File(folder1, "/fyp/employee.ser")
+        val myFile1 = File(folder1, "/fyp/states.ser")
         val fileIn = FileInputStream(myFile1)
         val obl = ObjectInputStreamWithLoader(fileIn, dex_loader())
         val e1 = obl.readObject() as DynamicApp
