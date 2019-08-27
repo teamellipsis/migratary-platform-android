@@ -95,7 +95,7 @@ class AppUnzipActivity : AppCompatActivity() {
         }
 
         override fun doInBackground(vararg argv: String): Boolean {
-            val targetDirectory = File(Environment.getExternalStorageDirectory().absolutePath, "fyp/Zip")
+            val targetDirectory = File(appConfig.get(AppConstant.KEY_WORKING_DIR))
 
             return fileSystem.unzipByIntent(uri, targetDirectory, this)
         }
