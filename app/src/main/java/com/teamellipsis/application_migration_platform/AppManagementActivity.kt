@@ -10,7 +10,6 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import kotlinx.android.synthetic.main.activity_app_management.*
-import java.io.File
 import java.lang.Exception
 import java.net.HttpURLConnection
 import java.net.URL
@@ -21,10 +20,10 @@ import android.support.v7.app.AlertDialog
 import android.widget.Toast
 import com.teamellipsis.dynamic.DynamicApp
 import dalvik.system.DexClassLoader
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.io.ObjectOutputStream
+import java.io.*
 import java.util.*
+import java.util.zip.ZipEntry
+import java.util.zip.ZipInputStream
 
 class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
 
@@ -142,6 +141,7 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
 
     fun openApp(filePath: File) {
         obj=deserialize()
+        getclasses()
         Toast.makeText(applicationContext,"Object loaded sucessfully", Toast.LENGTH_LONG).show()
         this.st = ServerThred("state data",obj)
         st!!.run()
@@ -274,5 +274,33 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
         )
         alertDialog.show()
     }
+    fun getclasses() {
+        val folder1 = Environment.getExternalStorageDirectory()
+        val myFile1 = File(folder1, "/fyp/entry.tf")
+        var text = ""
+        if (myFile1 != null) {
+            var br = BufferedReader(FileReader(myFile1))
+            text = br.readLine()
+            Log.i("App-Migratory-Platform", text)
+        } else {
+            Log.i("App-Migratory-Platform", "file_not found")
+        }
+    }
+//        var br = BufferedReader(FileReader(myFile1))
+//        var line=""
+//        while ((line) != null) {
+//            line = br.readLine()
+//            text.append(line)
+//            text.append('\n')
+//            line = br.readLine()
+//        }
+//            br.close()
+//        Log.i("App-Migratory-Platform", text.toString())
+//        }
+
+    //You'll need to add proper error handling here
+
+
+
 
 }
