@@ -279,5 +279,20 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
         fileOut.close()
 
     }
+    override fun onBackPressed() {
+//        super.onBackPressed()
+        val alertDialog = AlertDialog.Builder(this).create()
+        alertDialog.setTitle("Alert")
+        alertDialog.setMessage("Do you want to exit?")
+        alertDialog.setButton(
+            AlertDialog.BUTTON_POSITIVE, "No",
+            DialogInterface.OnClickListener { dialog, which -> dialog.dismiss() }
+        )
+        alertDialog.setButton(
+            AlertDialog.BUTTON_NEGATIVE, "Yes",
+            DialogInterface.OnClickListener { dialog, which -> super.onBackPressed() }
+        )
+        alertDialog.show()
+    }
 
 }
