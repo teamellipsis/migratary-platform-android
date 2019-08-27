@@ -39,9 +39,12 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
         appConfig = AppConfig(applicationContext)
         if (appConfig.get(AppConstant.KEY_WORKING_DIR).isEmpty()) {
             Log.i("App-Migratory-Platform", "first_time ")
-            appConfig.set(AppConstant.KEY_WORKING_DIR, "ttt")
+            val intent = Intent(applicationContext, MainActivity::class.java)
+            startActivity(intent)
+//            appConfig.set(AppConstant.KEY_WORKING_DIR, "ttt")
         }else{
-            Log.i("App-Migratory-Platform", "second time ")
+            Log.i("App-Migratory-Platform", appConfig.get(AppConstant.KEY_WORKING_DIR))
+
         }
         listView.onItemClickListener = this
 
@@ -49,7 +52,7 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
 //        var appConfig = AppConfig(applicationContext)
         context = this
 
-        val appsDir = File(Environment.getExternalStorageDirectory().absolutePath+ "/fyp")
+        val appsDir = File(appConfig.get(AppConstant.KEY_WORKING_DIR))
         if (appsDir.exists()) {
             Log.i("App-Migratory-Platform", appsDir.listFiles().size.toString())
 
@@ -95,7 +98,7 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
                             AppDialogOptions.Package.ordinal -> {
                                 val packagesDir = File(appPath.parent)
                                 packagesDir.mkdirs()
-                                fileSystem.zipDir(appPath, File(packagesDir, appPath.name + ".zip"))
+                                fileSystem.zipDir(appPath, File(packagesDir.parent, appPath.name + ".zip"))
                             }
                             AppDialogOptions.Send.ordinal -> {
                                 val file = File(appPath.parent, appPath.name + ".zip")
@@ -162,6 +165,10 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
 
     fun checkStatusCodeAndResend(statusCode: Long?) {
 
+    }
+    fun changeDir(view: View) {
+        val intent = Intent(applicationContext, MainActivity::class.java)
+        startActivity(intent)
     }
 
     fun isAppUp(view: View) {
