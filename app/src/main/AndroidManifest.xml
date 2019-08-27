@@ -33,8 +33,10 @@
          <!--<category android:name="android.intent.category.LAUNCHER"/> -->
          <!--</intent-filter> -->
          </activity>
-        <activity android:name=".AppManagementActivity">
-            <intent-filter>
+        <activity android:name=".AppManagementActivity"
+                  android:launchMode= "singleInstance">
+
+            <intent-filter>8
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
