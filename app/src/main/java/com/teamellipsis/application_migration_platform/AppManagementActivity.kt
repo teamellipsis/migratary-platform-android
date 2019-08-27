@@ -141,33 +141,17 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
     }
 
     fun openApp(filePath: File) {
-        obj=serialize()
+        obj=deserialize()
         Toast.makeText(applicationContext,"Object loaded sucessfully", Toast.LENGTH_LONG).show()
         this.st = ServerThred("state data",obj)
         st!!.run()
         val intent = Intent(applicationContext, BrowserActivity::class.java)
         startActivity(intent)
-//        Log.i("App-Migratory-Platform", filePath.absolutePath + "/server.js")
-//        var projectThread = Thread(Runnable {
-//            var nativeClient = NativeClient()
-//            nativeClient.startNodeWithArgs("node", filePath.absolutePath + "/server.js")
-//            Log.i("App-Migratory-Platform", filePath.absolutePath + "/server.js")
-//        })
-//        projectThread.start()
-//        Log.i("App-Migratory-Platform", projectThread.name)
-//        checkStatusCodeAndResend(null)
+
     }
 
     fun checkStatusCodeAndResend(statusCode: Long?) {
-//        if (statusCode != 200.toLong()) {
-//            HttpAsyncTask().execute()
-//        } else {
-//            val webViewUrl = "http://localhost:3000"
-//            val intent = Intent(applicationContext, AgentActivity::class.java).apply {
-//                putExtra("WEB_VIEW_URL", webViewUrl)
-//            }
-//            startActivity(intent)
-//        }
+
     }
 
     fun isAppUp(view: View) {
@@ -256,17 +240,13 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
         return DexClassLoader(getDirectoryPath, cacheDir.absolutePath, null, classLoader)
     }
 
-    fun serialize() : DynamicApp {
+    fun deserialize() : DynamicApp {
         val folder1 = Environment.getExternalStorageDirectory()
         val myFile1 = File(folder1, "/fyp/states.ser")
         val fileIn = FileInputStream(myFile1)
         val obl = ObjectInputStreamWithLoader(fileIn, dex_loader())
         val e1 = obl.readObject() as DynamicApp
         obl.close()
-        val arr6 = arrayOf("0", "test1", "test_task", "2001-2-21")
-//        e1.execute(arr6)
-//        e1.execute(arr6)
-//        fileIn.close()
         return e1
     }
     fun saveobject(){
