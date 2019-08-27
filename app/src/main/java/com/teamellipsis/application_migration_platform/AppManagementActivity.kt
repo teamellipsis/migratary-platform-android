@@ -21,9 +21,6 @@ import android.widget.Toast
 import com.teamellipsis.dynamic.DynamicApp
 import dalvik.system.DexClassLoader
 import java.io.*
-import java.util.*
-import java.util.zip.ZipEntry
-import java.util.zip.ZipInputStream
 
 class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
 
@@ -145,7 +142,11 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
         Toast.makeText(applicationContext,"Object loaded sucessfully", Toast.LENGTH_LONG).show()
         this.st = ServerThred("state data",obj)
         st!!.run()
-        val intent = Intent(applicationContext, BrowserActivity::class.java)
+//        val intent = Intent(applicationContext, AgentActivity::class.java).apply {
+//            putExtra("WEB_VIEW_URL", webViewUrl)
+//        }
+        startActivity(intent)
+        val intent = Intent(applicationContext, BrowserActivity::class.java).apply { putExtra("WEB_VIEW_URL_FILE", filePath.absolutePath) }
         startActivity(intent)
 
     }
