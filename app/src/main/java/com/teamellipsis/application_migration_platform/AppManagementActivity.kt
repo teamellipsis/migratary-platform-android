@@ -30,10 +30,19 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
     lateinit var context: Context
     lateinit var obj : DynamicApp
     lateinit var st : ServerThred
+    lateinit var appConfig: AppConfig
+
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_app_management)
-
+        appConfig = AppConfig(applicationContext)
+        if (appConfig.get(AppConstant.KEY_WORKING_DIR).isEmpty()) {
+            Log.i("App-Migratory-Platform", "first_time ")
+            appConfig.set(AppConstant.KEY_WORKING_DIR, "ttt")
+        }else{
+            Log.i("App-Migratory-Platform", "second time ")
+        }
         listView.onItemClickListener = this
 
         fileSystem = FileSystem(applicationContext)
