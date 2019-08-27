@@ -93,12 +93,12 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
                                 openApp(appPath)
                             }
                             AppDialogOptions.Package.ordinal -> {
-                                val packagesDir = File(fileSystem.getPackagesDir())
+                                val packagesDir = File(appPath.parent)
                                 packagesDir.mkdirs()
                                 fileSystem.zipDir(appPath, File(packagesDir, appPath.name + ".zip"))
                             }
                             AppDialogOptions.Send.ordinal -> {
-                                val file = File(fileSystem.getPackagesDir(), appPath.name + ".zip")
+                                val file = File(appPath.parent, appPath.name + ".zip")
                                 val fileUri = FileProvider.getUriForFile(
                                     context,
                                     applicationContext.packageName + ".provider",
