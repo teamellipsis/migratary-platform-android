@@ -1,8 +1,10 @@
 package com.teamellipsis.application_migration_platform
 
+import android.Manifest
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -15,6 +17,8 @@ import java.net.HttpURLConnection
 import java.net.URL
 import android.os.AsyncTask
 import android.os.Environment
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import android.support.v4.content.FileProvider
 import android.support.v7.app.AlertDialog
 import android.widget.Toast
@@ -31,11 +35,12 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
     lateinit var obj : DynamicApp
     lateinit var st : ServerThred
     lateinit var appConfig: AppConfig
-
+    var PERMISSIONS_WRITE_EXTERNAL_STORAGE = 0
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_app_management)
+
         appConfig = AppConfig(applicationContext)
         if (appConfig.get(AppConstant.KEY_WORKING_DIR).isEmpty()) {
             Log.i("App-Migratory-Platform", "first_time ")
@@ -310,6 +315,40 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
         val moduleClass= clzLoader.loadClass(cls)
         return moduleClass.newInstance() as DynamicApp
 
+    }
+
+    private fun getPermission() {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            )
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                PERMISSIONS_WRITE_EXTERNAL_STORAGE
+            )
+        } else {
+//            dot1.setImageResource(R.drawable.ic_tick_mark_dark)
+//            printLog("LOG: (getPermission) PERMISSION_GRANTED")
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == PERMISSIONS_WRITE_EXTERNAL_STORAGE) {
+            if (grantResults.size == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                dot1.setImageResource(R.drawable.ic_tick_mark_dark)
+//                printLog("LOG: (onRequestPermissionsResult) PERMISSION_GRANTED")
+            } else {
+//                dot1.setImageResource(R.drawable.ic_cancel_dark)
+//                printLog("LOG: (onRequestPermissionsResult) PERMISSION_DENIED")
+            }
+        }
     }
 
 

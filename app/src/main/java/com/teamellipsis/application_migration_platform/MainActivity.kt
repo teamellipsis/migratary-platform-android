@@ -132,6 +132,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
         createFolder(currentdir.absolutePath)
         val intent = Intent(applicationContext, AppManagementActivity::class.java)
         startActivity(intent)
+        finish()
     }
     fun checkStatusCodeAndResend(statusCode: Long?) {
 
