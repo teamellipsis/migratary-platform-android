@@ -140,8 +140,8 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
     }
 
     fun openApp(filePath: File) {
-        obj=deserialize()
-        getclasses()
+        obj=deserialize(filePath.absolutePath)
+       // getclasses()
         Toast.makeText(applicationContext,"Object loaded sucessfully", Toast.LENGTH_LONG).show()
         this.st = ServerThred("state data",obj)
         st!!.run()
@@ -233,25 +233,25 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
         }
     }
 
-    fun dex_loader(): DexClassLoader {
-        val folder1 = Environment.getExternalStorageDirectory()
-        val myFile1 = File(folder1, "/fyp/dm.dex")
+    fun dex_loader(path:String): DexClassLoader {
+//        val folder1 = Environment.getExternalStorageDirectory()
+        val myFile1 = File(path, "dm.dex")
         val getDirectoryPath = myFile1.getAbsolutePath()
         return DexClassLoader(getDirectoryPath, cacheDir.absolutePath, null, classLoader)
     }
 
-    fun deserialize() : DynamicApp {
-        val folder1 = Environment.getExternalStorageDirectory()
-        val myFile1 = File(folder1, "/fyp/states.ser")
+    fun deserialize(path:String) : DynamicApp {
+//        val folderPath = Environment.getExternalStorageDirectory()
+        val myFile1 = File(path, "states.ser")
         val fileIn = FileInputStream(myFile1)
-        val obl = ObjectInputStreamWithLoader(fileIn, dex_loader())
+        val obl = ObjectInputStreamWithLoader(fileIn, dex_loader(path))
         val e1 = obl.readObject() as DynamicApp
         obl.close()
         return e1
     }
-    fun saveobject(){
-        val folder1 = Environment.getExternalStorageDirectory()
-        val myFile1 = File(folder1, "/fyp/out/employee.ser")
+    fun saveobject(path:String){
+//        val folder1 = Environment.getExternalStorageDirectory()
+        val myFile1 = File(path, "out/employee.ser")
         val fileOut = FileOutputStream(myFile1)
         val out = ObjectOutputStream(fileOut)
         out.writeObject(obj)
