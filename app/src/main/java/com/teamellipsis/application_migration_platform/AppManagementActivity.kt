@@ -43,7 +43,7 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
 //        var appConfig = AppConfig(applicationContext)
         context = this
 
-        var appsDir = File(Environment.getExternalStorageDirectory().absolutePath+ "/fyp")
+        val appsDir = File(Environment.getExternalStorageDirectory().absolutePath+ "/fyp")
         if (appsDir.exists()) {
             Log.i("App-Migratory-Platform", appsDir.listFiles().size.toString())
 
@@ -286,19 +286,15 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
             Log.i("App-Migratory-Platform", "file_not found")
         }
     }
-//        var br = BufferedReader(FileReader(myFile1))
-//        var line=""
-//        while ((line) != null) {
-//            line = br.readLine()
-//            text.append(line)
-//            text.append('\n')
-//            line = br.readLine()
-//        }
-//            br.close()
-//        Log.i("App-Migratory-Platform", text.toString())
-//        }
 
-    //You'll need to add proper error handling here
+    fun load(dex: File, cls: String = "com.example.dynamicclassloader.Todo_App"): DynamicApp {
+        println("dex path=  "+ dex.absolutePath)
+        val clzLoader= DexClassLoader(dex.absolutePath, cacheDir.absolutePath, null, this.javaClass.classLoader)
+        val moduleClass= clzLoader.loadClass(cls)
+        return moduleClass.newInstance() as DynamicApp
+
+    }
+
 
 
 
