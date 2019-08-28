@@ -56,7 +56,7 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
         fileSystem = FileSystem(applicationContext)
 //        var appConfig = AppConfig(applicationContext)
         context = this
-
+        AppManagementActivity.AppPath=appConfig.get(AppConstant.KEY_WORKING_DIR)
         val appsDir = File(appConfig.get(AppConstant.KEY_WORKING_DIR))
         if (appsDir.exists()) {
             Log.i("App-Migratory-Platform", appsDir.listFiles().size.toString())
@@ -73,6 +73,45 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
         }
 
 
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.i("App-Migratory-Platform", appConfig.get(AppConstant.KEY_WORKING_DIR))
+        AppManagementActivity.AppPath=appConfig.get(AppConstant.KEY_WORKING_DIR)
+        appConfig = AppConfig(applicationContext)
+        if (appConfig.get(AppConstant.KEY_WORKING_DIR).isEmpty()) {
+            Log.i("App-Migratory-Platform", "first_time ")
+            val intent = Intent(applicationContext, MainActivity::class.java)
+            startActivity(intent)
+//            appConfig.set(AppConstant.KEY_WORKING_DIR, "ttt")
+        }else{
+            Log.i("App-Migratory-Platform", appConfig.get(AppConstant.KEY_WORKING_DIR))
+
+        }
+        listView.onItemClickListener = this
+
+        fileSystem = FileSystem(applicationContext)
+//        var appConfig = AppConfig(applicationContext)
+        context = this
+
+        listItems.clear()
+        listFiles.clear()
+        val appsDir = File(appConfig.get(AppConstant.KEY_WORKING_DIR))
+        if (appsDir.exists()) {
+            Log.i("App-Migratory-Platform", appsDir.listFiles().size.toString())
+
+            for (file in appsDir.listFiles()) {
+                listItems.add(file.name)
+                listFiles.add(file)
+            }
+
+            if (listItems.isNotEmpty()) {
+                listView.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems)
+//                listView.adapter = ArrayAdapter<String>(this, R.layout.app_list_item, R.id.listItemText, listItems)
+            }
+        }
 
     }
 
@@ -163,7 +202,7 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
 //            putExtra("WEB_VIEW_URL", webViewUrl)
 //        }
         startActivity(intent)
-        val intent = Intent(applicationContext, BrowserActivity::class.java).apply { putExtra("WEB_VIEW_URL_FILE", filePath.absolutePath) }
+        val intent = Intent(applicationContext, WebviewActivity::class.java).apply { putExtra("WEB_VIEW_URL_FILE", filePath.absolutePath) }
         startActivity(intent)
 
     }
@@ -348,6 +387,15 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
 //                dot1.setImageResource(R.drawable.ic_cancel_dark)
 //                printLog("LOG: (onRequestPermissionsResult) PERMISSION_DENIED")
             }
+        }
+    }
+
+    companion object {
+        lateinit var AppPath: String
+
+        fun a() : String {
+
+            return AppPath
         }
     }
 

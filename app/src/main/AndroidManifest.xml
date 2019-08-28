@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
           package="com.teamellipsis.application_migration_platform">
 
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -25,18 +26,19 @@
 
                 <data android:mimeType="application/zip"/>
             </intent-filter>
-
         </activity>
-         <activity android:name=".MainActivity">
-         <!--<intent-filter> -->
-         <!--<action android:name="android.intent.action.MAIN"/> -->
-         <!--<category android:name="android.intent.category.LAUNCHER"/> -->
-         <!--</intent-filter> -->
-         </activity>
-        <activity android:name=".AppManagementActivity"
-                  android:launchMode= "singleInstance">
+        <activity android:name=".MainActivity">
 
-            <intent-filter>8
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN"/> -->
+            <!-- <category android:name="android.intent.category.LAUNCHER"/> -->
+            <!-- </intent-filter> -->
+        </activity>
+        <activity
+                android:name=".AppManagementActivity"
+                android:launchMode="singleInstance">
+            <intent-filter>
+                8
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -44,6 +46,7 @@
         </activity>
         <activity android:name=".BrowserActivity">
         </activity>
+
         <provider
                 android:name="android.support.v4.content.FileProvider"
                 android:authorities="${applicationId}.provider"
@@ -53,6 +56,12 @@
                     android:name="android.support.FILE_PROVIDER_PATHS"
                     android:resource="@xml/provider_paths"/>
         </provider>
+
+        <activity
+                android:name=".WebviewActivity"
+                android:label="@string/title_activity_webview"
+                android:theme="@style/AppTheme.NoActionBar">
+        </activity>
     </application>
 
 </manifest>

@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Application_migration_platform</string>
     <string name="title_activity_app_unzip">AppUnzipActivity</string>
+    <string name="title_activity_webview">WebviewActivity</string>
 </resources>

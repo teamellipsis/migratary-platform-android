@@ -1,5 +1,6 @@
 package com.teamellipsis.application_migration_platform;
 
+import android.os.Environment;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.teamellipsis.dynamic.DynamicApp;
@@ -7,6 +8,7 @@ import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -23,12 +25,14 @@ public class servr extends WebSocketServer {
     private DynamicApp app;
     private Set<WebSocket> conns;
 
+
     public servr(DynamicApp app) {
         super(new InetSocketAddress(TCP_PORT));
         conns = new HashSet<>();
         serverstate="not_set";
         this.app=app;
         newserverstate=app.saveState();
+
     }
 
     @Override
@@ -68,6 +72,12 @@ public class servr extends WebSocketServer {
         if(args.get("operation").equals("getdata")){
             String json=gson.toJson(app.saveState());
             conn.send(json);
+        }else if(args.get("operation").equals("save")){
+            try {
+                saveobject();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         else {
             try {
@@ -125,4 +135,18 @@ public class servr extends WebSocketServer {
         System.out.println("ERROR from " + conn.getRemoteSocketAddress().getAddress().getHostAddress());
     }
 
+    @Override
+    public void onStart() {
+
+    }
+
+    public void saveobject() throws IOException {
+        File folder1 = Environment.getExternalStorageDirectory();
+        File myFile1 = new File(AppManagementActivity.AppPath+"/testobj.ser");
+        FileOutputStream fileOut = new FileOutputStream(myFile1);
+        ObjectOutputStream out = new ObjectOutputStream(fileOut);
+        out.writeObject(app);
+        out.close();
+        fileOut.close();
+    }
 }
