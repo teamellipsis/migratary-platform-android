@@ -5,9 +5,11 @@ import com.teamellipsis.dynamic.DynamicApp
 class ServerThred(myParam: String, private var dapp: DynamicApp?) : Thread() {
 //    private val skserver: ? = null
     private val server: servr
+    private var serverExist= false
 
     init {
         server = servr(dapp)
+        serverExist=true
     }
 
     override fun run() {
@@ -21,8 +23,8 @@ class ServerThred(myParam: String, private var dapp: DynamicApp?) : Thread() {
 //        this.server!!.setstate(state)
     }
 
-    fun getstate() {
-//        return this.server!!.getstate()
+    fun closeserver() {
+        server.stop()
     }
 
     fun get_app(app: DynamicApp) {

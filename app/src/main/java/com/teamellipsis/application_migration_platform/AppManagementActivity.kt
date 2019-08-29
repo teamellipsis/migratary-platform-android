@@ -40,7 +40,7 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_app_management)
-
+        getPermission()
         appConfig = AppConfig(applicationContext)
         if (appConfig.get(AppConstant.KEY_WORKING_DIR).isEmpty()) {
             Log.i("App-Migratory-Platform", "first_time ")
@@ -195,13 +195,16 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
     fun openApp(filePath: File) {
         obj=deserialize(filePath.absolutePath)
        // getclasses()
+
         Toast.makeText(applicationContext,"Object loaded sucessfully", Toast.LENGTH_LONG).show()
-        this.st = ServerThred("state data",obj)
-        st!!.run()
+        AppManagementActivity.serverthread = ServerThred("state data",obj)
+
+        AppManagementActivity.serverthread!!.run()
+
 //        val intent = Intent(applicationContext, AgentActivity::class.java).apply {
 //            putExtra("WEB_VIEW_URL", webViewUrl)
 //        }
-        startActivity(intent)
+//        startActivity(intent)
         val intent = Intent(applicationContext, WebviewActivity::class.java).apply { putExtra("WEB_VIEW_URL_FILE", filePath.absolutePath) }
         startActivity(intent)
 
@@ -392,10 +395,10 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
 
     companion object {
         lateinit var AppPath: String
-
-        fun a() : String {
-
-            return AppPath
+        lateinit var serverthread: ServerThred
+        fun closeserver() {
+            AppManagementActivity.serverthread.closeserver()
+            return
         }
     }
 

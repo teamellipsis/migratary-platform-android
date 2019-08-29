@@ -48,10 +48,13 @@ class AppUnzipActivity : AppCompatActivity() {
 //        btnExtract.isEnabled = false
         extractPackageAsyncTask = ExtractPackageAsyncTask()
         extractPackageAsyncTask?.execute()
+        open_btn.visibility=View.VISIBLE
     }
 
     fun openApp(view: View){
-
+        val intent = Intent(applicationContext, AppManagementActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 
 //    private inner class CheckPackageJsonAsyncTask : AsyncTask<String, Int, JSONObject>() {

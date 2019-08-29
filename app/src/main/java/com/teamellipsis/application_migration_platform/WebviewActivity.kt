@@ -39,9 +39,10 @@ class WebviewActivity : AppCompatActivity() {
 
         fab.setOnClickListener { view ->
             saveapp()
+            AppManagementActivity.closeserver()
             finish()
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
+//            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                .setAction("Action", null).show()
         }
     }
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -73,13 +74,12 @@ fun saveapp(){
     System.out.println("connect server...............................................")
     var client=Client(URI("ws://localhost:4444"))
     client.connect()
-    var args: HashMap<String, String>? =null
-    if (args != null) {
-        args.put("operation","saveobject")
-    }
+    val args = HashMap<String, String>()
+    args.put("operation","saveobject")
     val gson = Gson()
     val json = gson.toJson(args)
     client.send(json)
+
 
 }
 

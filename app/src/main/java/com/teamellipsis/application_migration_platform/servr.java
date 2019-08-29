@@ -13,6 +13,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.net.InetSocketAddress;
+import java.sql.SQLOutput;
 import java.util.*;
 
 
@@ -24,6 +25,7 @@ public class servr extends WebSocketServer {
     private String send_data;
     private DynamicApp app;
     private Set<WebSocket> conns;
+    private static boolean serveropen;
 
 
     public servr(DynamicApp app) {
@@ -53,11 +55,13 @@ public class servr extends WebSocketServer {
 //            String json=gson.toJson(app.saveState());
 //            conn.send(json);
         }
+        this.serveropen=true;
     }
 
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-        conns.remove(conn);
+//        conns.remove(conn);
+        conns.clear();
         System.out.println("Closed connection to " + conn.getRemoteSocketAddress().getAddress().getHostAddress());
     }
 
@@ -72,7 +76,7 @@ public class servr extends WebSocketServer {
         if(args.get("operation").equals("getdata")){
             String json=gson.toJson(app.saveState());
             conn.send(json);
-        }else if(args.get("operation").equals("save")){
+        }else if(args.get("operation").equals("saveobject")){
             try {
                 saveobject();
             } catch (IOException e) {
@@ -143,10 +147,16 @@ public class servr extends WebSocketServer {
     public void saveobject() throws IOException {
         File folder1 = Environment.getExternalStorageDirectory();
         File myFile1 = new File(AppManagementActivity.AppPath+"/testobj.ser");
+        System.out.println("saved app ..............................................");
         FileOutputStream fileOut = new FileOutputStream(myFile1);
         ObjectOutputStream out = new ObjectOutputStream(fileOut);
         out.writeObject(app);
         out.close();
         fileOut.close();
+
     }
+    public static boolean getserverstate(){
+        return serveropen;
+    }
+
 }
