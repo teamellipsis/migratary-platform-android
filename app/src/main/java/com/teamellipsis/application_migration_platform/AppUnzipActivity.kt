@@ -98,7 +98,7 @@ class AppUnzipActivity : AppCompatActivity() {
         }
 
         override fun doInBackground(vararg argv: String): Boolean {
-            val targetDirectory = File(Environment.getExternalStorageDirectory().absolutePath, "fyp/Zip")
+            val targetDirectory = File(appConfig.get(AppConstant.KEY_WORKING_DIR))
 
             return fileSystem.unzipByIntent(uri, targetDirectory, this)
         }
@@ -114,9 +114,8 @@ class AppUnzipActivity : AppCompatActivity() {
         override fun onPostExecute(success: Boolean) {
 //            progressBarExtract.visibility = View.GONE
             if (success) {
-//              btnCancel.visibility = View.GONE
-//              btnOpen.visibility = View.VISIBLE
-//                open_btn.visibility= View.VISIBLE
+                cancel_btn.visibility= View.GONE
+                open_btn.visibility= View.VISIBLE
             } else {
 //                txtExecutable.visibility = View.VISIBLE
 //                txtExecutable.text = resources.getString(R.string.extraction_failed_app_detail)
