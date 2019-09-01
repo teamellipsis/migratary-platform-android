@@ -38,8 +38,8 @@ class WebviewActivity : AppCompatActivity() {
         htmlWebView.loadUrl("file:///" + webFile.getAbsolutePath())
 
         fab.setOnClickListener { view ->
-            saveapp()
-            AppManagementActivity.closeserver()
+            saveapp(true)
+//            AppManagementActivity.closeserver()
             finish()
 //            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                .setAction("Action", null).show()
@@ -70,7 +70,7 @@ class WebviewActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
-fun saveapp(){
+fun saveapp(close: Boolean){
     System.out.println("connect server...............................................")
     var client=Client(URI("ws://localhost:4444"))
     client.connect()
@@ -79,6 +79,9 @@ fun saveapp(){
     val gson = Gson()
     val json = gson.toJson(args)
     client.send(json)
+    if(close){
+        AppManagementActivity.closeserver()
+    }
 
 
 }

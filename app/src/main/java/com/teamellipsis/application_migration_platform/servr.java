@@ -136,6 +136,7 @@ public class servr extends WebSocketServer {
             conns.remove(conn);
             // do some thing if required
         }
+        System.out.println("Error ##: "+ex.toString());
         System.out.println("ERROR from " + conn.getRemoteSocketAddress().getAddress().getHostAddress());
     }
 

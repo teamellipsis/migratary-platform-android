@@ -26,7 +26,7 @@ class AppUnzipActivity : AppCompatActivity() {
         setContentView(R.layout.activity_app_unzip)
         setSupportActionBar(toolbar)
 
-        supportActionBar?.setTitle(R.string.title_activity_app_unzip)
+        supportActionBar?.setTitle("App Unzip Manager")
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         uri = if (intent.action == Intent.ACTION_VIEW) {
@@ -38,9 +38,11 @@ class AppUnzipActivity : AppCompatActivity() {
         fileSystem = FileSystem(applicationContext)
         appConfig = AppConfig(applicationContext)
 
-        app_name.text= uri.toString()
+
+        app_name.text= uri.lastPathSegment.toString()//uri.toString()
         println(uri)
-        open_btn.visibility=View.GONE
+        open_btn.isEnabled = false
+        cancel_btn.visibility= View.GONE
     }
 
     fun extract(view: View) {
@@ -115,7 +117,7 @@ class AppUnzipActivity : AppCompatActivity() {
 //            progressBarExtract.visibility = View.GONE
             if (success) {
                 cancel_btn.visibility= View.GONE
-                open_btn.visibility= View.VISIBLE
+                open_btn.isEnabled= true
             } else {
 //                txtExecutable.visibility = View.VISIBLE
 //                txtExecutable.text = resources.getString(R.string.extraction_failed_app_detail)
