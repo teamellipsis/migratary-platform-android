@@ -193,7 +193,34 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
     }
 
     fun openApp(filePath: File) {
-        obj=deserialize(filePath.absolutePath)
+        var files = filePath.listFiles()
+        var avalablestateobject=false
+        var clsfilepath=""
+        var dexpath=""
+        for (f in files) {
+            val fullPath = f.absolutePath
+            val dot = fullPath.lastIndexOf(".")
+            val ext = fullPath.substring(dot + 1)
+
+            Log.i("extension", ext)
+            if (ext.equals("ser")) {
+                avalablestateobject=true
+            }
+            else if(ext.equals("tf")){
+                clsfilepath=fullPath
+            }
+            else if(ext.equals("dex")){
+                dexpath=fullPath
+            }
+        }
+        Log.i("extension", avalablestateobject.toString())
+        if(avalablestateobject){
+            obj=deserialize(filePath.absolutePath)
+            Log.i("foundclasses", getclasses(clsfilepath))
+        }else{
+            obj=  loadobject(dexpath,getclasses(clsfilepath))
+        }
+
        // getclasses()
 
         Toast.makeText(applicationContext,"Object loaded sucessfully", Toast.LENGTH_LONG).show()
@@ -299,14 +326,14 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
 
     fun dex_loader(path:String): DexClassLoader {
 //        val folder1 = Environment.getExternalStorageDirectory()
-        val myFile1 = File(path, "dm.dex")
+        val myFile1 = File(path, "Todo.dex")
         val getDirectoryPath = myFile1.getAbsolutePath()
         return DexClassLoader(getDirectoryPath, cacheDir.absolutePath, null, classLoader)
     }
 
     fun deserialize(path:String) : DynamicApp {
 //        val folderPath = Environment.getExternalStorageDirectory()
-        val myFile1 = File(path, "states.ser")
+        val myFile1 = File(path, "todo.ser")
         val fileIn = FileInputStream(myFile1)
         val obl = ObjectInputStreamWithLoader(fileIn, dex_loader(path))
         val e1 = obl.readObject() as DynamicApp
@@ -338,9 +365,9 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
         )
         alertDialog.show()
     }
-    fun getclasses() {
+    fun getclasses(path:String):String {
         val folder1 = Environment.getExternalStorageDirectory()
-        val myFile1 = File(folder1, "/fyp/entry.tf")
+        val myFile1 = File(path)
         var text = ""
         if (myFile1 != null) {
             var br = BufferedReader(FileReader(myFile1))
@@ -349,11 +376,12 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
         } else {
             Log.i("App-Migratory-Platform", "file_not found")
         }
+        return text
     }
 
-    fun load(dex: File, cls: String = "com.example.dynamicclassloader.Todo_App"): DynamicApp {
-        println("dex path=  "+ dex.absolutePath)
-        val clzLoader= DexClassLoader(dex.absolutePath, cacheDir.absolutePath, null, this.javaClass.classLoader)
+    fun loadobject (dexpath: String, cls: String): DynamicApp {
+//        println("dex path=  "+ dex.absolutePath)
+        val clzLoader= DexClassLoader(dexpath, cacheDir.absolutePath, null, classLoader)
         val moduleClass= clzLoader.loadClass(cls)
         return moduleClass.newInstance() as DynamicApp
 

@@ -41,6 +41,10 @@ public class servr extends WebSocketServer {
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
         conns.add(conn);
         System.out.println("New connection from " + conn.getRemoteSocketAddress().getAddress().getHostAddress());
+//        Gson gson=new Gson();
+//        String json = gson.toJson(app.saveState());
+//        conn.send(json);
+
 
         if(serverstate.equals("not_set")){
             System.out.println("not_set state");
@@ -60,8 +64,8 @@ public class servr extends WebSocketServer {
 
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-//        conns.remove(conn);
-        conns.clear();
+        conns.remove(conn);
+//        conns.clear();
         System.out.println("Closed connection to " + conn.getRemoteSocketAddress().getAddress().getHostAddress());
     }
 
@@ -72,23 +76,36 @@ public class servr extends WebSocketServer {
         Method method;
         Type type= new TypeToken<HashMap<String,String>>(){}.getType();
         HashMap<String, String> args= gson.fromJson(message,type);
-        System.out.println(args.get("operation"));
-        if(args.get("operation").equals("getdata")){
-            String json=gson.toJson(app.saveState());
-            conn.send(json);
-        }else if(args.get("operation").equals("saveobject")){
+//        System.out.println(args.get("operation"));
+//        if(args.get("operation").equals("getdata")){
+//            String json=gson.toJson(app.saveState());
+//            conn.send(json);
+//        }
+//        else if(args.get("operation").equals("")){
+//            String json=gson.toJson(app.saveState());
+//            conn.send(json);
+//        }
+//
+//        if(args.get("operation").equals("saveobject")){
+//            try {
+//                saveobject();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        else {
             try {
-                saveobject();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        else {
-            try {
-                method = this.app.getClass().getMethod(Objects.requireNonNull(args.get("method")), HashMap.class);
-                method.invoke(this.app, args);
-                String json = gson.toJson(app.saveState());
-                conn.send(json);
+                if(args.get("method").equals("saveobject")){
+                    System.out.println("save object");
+                    saveobject();
+                    conns.remove(conn);
+
+                }else {
+                    method = this.app.getClass().getMethod(Objects.requireNonNull(args.get("method")), HashMap.class);
+                    method.invoke(this.app, args);
+                    String json = gson.toJson(app.saveState());
+                    conn.send(json);
+                }
 
             } catch (NoSuchMethodException e) {
                 e.printStackTrace();
@@ -96,8 +113,10 @@ public class servr extends WebSocketServer {
                 e.printStackTrace();
             } catch (InvocationTargetException e) {
                 e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        }
+//        }
 
 //        operations operation= gson.fromJson(message, operations.class);
 //        String[] arr= new String[]{};
@@ -136,8 +155,7 @@ public class servr extends WebSocketServer {
             conns.remove(conn);
             // do some thing if required
         }
-        System.out.println("Error ##: "+ex.toString());
-        System.out.println("ERROR from " + conn.getRemoteSocketAddress().getAddress().getHostAddress());
+
     }
 
     @Override
@@ -154,6 +172,7 @@ public class servr extends WebSocketServer {
         out.writeObject(app);
         out.close();
         fileOut.close();
+//        conns.clear();
 
     }
     public static boolean getserverstate(){

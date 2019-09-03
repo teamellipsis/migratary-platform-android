@@ -71,17 +71,16 @@ class WebviewActivity : AppCompatActivity() {
         }
     }
 fun saveapp(close: Boolean){
-    System.out.println("connect server...............................................")
+
     var client=Client(URI("ws://localhost:4444"))
     client.connect()
+    System.out.println("connected to server...............................................")
     val args = HashMap<String, String>()
-    args.put("operation","saveobject")
+    args.put("method","saveobject")
     val gson = Gson()
     val json = gson.toJson(args)
     client.send(json)
-    if(close){
-        AppManagementActivity.closeserver()
-    }
+   client.close()
 
 
 }
