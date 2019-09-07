@@ -9,22 +9,28 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import kotlinx.android.synthetic.main.activity_app_management.*
 import java.lang.Exception
 import java.net.HttpURLConnection
 import java.net.URL
 import android.os.AsyncTask
 import android.os.Environment
+import android.os.Handler
+import android.support.design.widget.TextInputLayout
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.FileProvider
 import android.support.v7.app.AlertDialog
-import android.widget.Toast
+import android.text.InputType
+import android.text.method.DigitsKeyListener
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.*
 import com.teamellipsis.dynamic.DynamicApp
 import dalvik.system.DexClassLoader
 import java.io.*
+import java.net.Socket
+import java.net.UnknownHostException
 
 class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
 
@@ -36,6 +42,9 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
     lateinit var st : ServerThred
     lateinit var appConfig: AppConfig
     var PERMISSIONS_WRITE_EXTERNAL_STORAGE = 0
+    lateinit var messagefilelength: String
+    lateinit var filename: String
+    lateinit var output: PrintWriter
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -74,6 +83,44 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
 
 
 
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.menu_appmanagement, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        return when (item.itemId) {
+            R.id.action_changedir -> {
+                val intent = Intent(applicationContext, MainActivity::class.java)
+                startActivity(intent)
+//                val intent = Intent(applicationContext, AppManagementActivity::class.java)
+//                startActivity(intent)
+//                finish()
+                true
+            }
+            R.id.getapp -> {
+//                finish()
+                showAlertWithTextInputLayout()
+                true
+            }
+            R.id.wifidirect -> {
+                finish()
+
+                true
+            }
+            R.id.exit -> {
+                finish()
+
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     override fun onResume() {
@@ -429,9 +476,174 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
             return
         }
     }
+    fun showAlertWithTextInputLayout() {
+        var layout = LinearLayout(context)
+        layout.setOrientation(LinearLayout.VERTICAL)
+
+        val textInputLayout = TextInputLayout(context)
+        val textInputLayout1 = TextInputLayout(context)
+        val ip = EditText(context)
+        ip.inputType= InputType.TYPE_CLASS_NUMBER
+        ip.keyListener= DigitsKeyListener.getInstance("0123456789.")
+        textInputLayout.hint = "Ip Address"
+        textInputLayout.addView(ip)
+        layout.addView(textInputLayout)
+
+        val port = EditText(context)
+        port.inputType= InputType.TYPE_CLASS_NUMBER
+        textInputLayout1.hint = "Port"
+
+        textInputLayout1.addView(port)
+        layout.addView(textInputLayout1)
+
+        val alert = AlertDialog.Builder(context)
+            .setTitle("Connect to remote device")
+            .setView(layout)
+            .setMessage("Please Enter Ip & port")
+            .setPositiveButton("Submit") { dialog, _ ->
+//                createDir(input.text.toString())
+                println(ip.text.toString())
+                println(port.text.toString().toInt())
+                connecttoserver(ip.text.toString(),port.text.toString().toInt())
+                dialog.cancel()
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.cancel()
+            }.create()
+
+        alert.show()
+    }
+
+    fun connecttoserver(ip:String, port:Int) {
+
+        val handler = Handler()
+        val thread = Thread(Runnable {
+            var sock: Socket? = null
+            try {
+//                val sock = Socket("192.168.43.13", 9002)
+                sock = Socket(ip, port)
+                println("Connecting...")
+                val input = BufferedReader(InputStreamReader(sock.getInputStream()))
+                output = PrintWriter(sock.getOutputStream())
+                output.println("send me file")
+                output.flush()
+
+                messagefilelength = input.readLine()
+
+                output = PrintWriter(sock.getOutputStream())
+                output.println("send me file")
+                output.flush()
+                filename = input.readLine()
 
 
+            } catch (e: UnknownHostException) {
+                e.printStackTrace()
+            } catch (e: FileNotFoundException) {
+                e.printStackTrace()
+            } catch (e: IOException) {
+                e.printStackTrace()
+
+            }finally {
+
+                handler.post {
+                    val builder1 = AlertDialog.Builder(context)
+                    builder1.setMessage(filename + messagefilelength)
+                    builder1.setCancelable(true)
+                        .setPositiveButton("Submit") { dialog, _ ->
+                            //                createDir(input.text.toString())
+//                            println(ip.text.toString())
+//                            println(port.text.toString().toInt())
+                            val thread1 = Thread(Runnable {
+                                val sock: Socket? = null
+                                try {
+                                    getfile(ip, port)
+                                } catch (e: UnknownHostException) {
+                                    e.printStackTrace()
+                                } catch (e: FileNotFoundException) {
+                                    e.printStackTrace()
+                                } catch (e: IOException) {
+                                    e.printStackTrace()
+
+                                }finally {
+                                    handler.post {
+                                        val alert = AlertDialog.Builder(context)
+                                            .setMessage("file is saved on app path")
+                                            .setCancelable(true)
+                                            .setPositiveButton("Ok") { dialog, _ ->
+                                                //                createDir(input.text.toString())
+//                                                println(ip.text.toString())
+//                                                println(port.text.toString().toInt())
+                                                dialog.cancel()
+                                            }.create()
+                                        alert.show()
+
+                                    }
+                                    if (sock != null) {
+                                        try {
+                                            sock.close()
+                                        } catch (e: IOException) {
+                                            e.printStackTrace()
+                                        }
+
+                                    }
+                                }
+                            })
+                            thread1.start()
+                            dialog.cancel()
+                        }
+                        .setNegativeButton("Cancel") { dialog, _ ->
+                            dialog.cancel()
+                        }.create()
+                    builder1.show()
+                }
+
+                if (sock != null) {
+                    try {
+                        sock.close()
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    }
+
+                }
+
+            }
+        })
+        thread.start()
+    }
 
 
+    fun getfile(ip:String, port:Int) {
+        val sock = Socket(ip, port)
+        println("Connecting...")
+        val output = PrintWriter(sock.getOutputStream())
+        output.println("get file")
+        output.flush()
 
+        val dIn = DataInputStream(sock.getInputStream())   // read length of incoming message
+        val length = dIn.readInt()
+        if (length > 0) {
+            val message = ByteArray(length)
+            val message1 = ByteArray(length)
+            dIn.readFully(message1, 0, message1.size)
+            println(message1)
+            writeByte(message1)
+
+
+        }
+    }
+
+    fun writeByte(bytes: ByteArray) {
+        val file = Environment.getExternalStorageDirectory()
+        val save = File(file, "/"+filename)
+
+        try {
+            val out = FileOutputStream(save.absolutePath)
+            out.write(bytes)
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+
+    }
 }
