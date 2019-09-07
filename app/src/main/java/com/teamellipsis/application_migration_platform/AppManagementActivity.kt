@@ -178,7 +178,8 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
                     AppDialogOptions.Package.name,
                     AppDialogOptions.Send.name,
                     AppDialogOptions.Reset.name,
-                    AppDialogOptions.Delete.name
+                    AppDialogOptions.Delete.name,
+                    AppDialogOptions.Direct_send.name
                 ),
                     DialogInterface.OnClickListener { dialog, which ->
                         Log.i("App-Migratory-Platform", which.toString())
@@ -216,6 +217,12 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
                             AppDialogOptions.Delete.ordinal -> {
 
                             }
+                            AppDialogOptions.Direct_send.ordinal -> {
+                                val intent = Intent(applicationContext, ServerActivity::class.java).apply {
+                                    putExtra("APP_PATH",appPath.absolutePath )
+                                }
+                                startActivity(intent)
+                            }
                             else -> { // Note the block
                                 print("x is neither 1 nor 2")
                             }
@@ -236,7 +243,7 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
     }
 
     enum class AppDialogOptions {
-        Open, Package, Send, Reset, Delete
+        Open, Package, Send, Reset, Delete ,Direct_send
     }
 
     fun openApp(filePath: File) {
