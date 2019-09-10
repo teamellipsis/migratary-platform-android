@@ -1,8 +1,10 @@
 package com.teamellipsis.application_migration_platform
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu
 import android.view.MenuItem
@@ -21,12 +23,12 @@ import java.net.URI
 //import java.util.HashMap
 
 class WebviewActivity : AppCompatActivity() {
-
+    lateinit var appConfig: AppConfig
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_webview)
         setSupportActionBar(toolbar)
-
+        appConfig = AppConfig(applicationContext)
         val filepath = intent.getStringExtra("WEB_VIEW_URL_FILE")
         val webFile = File( filepath,"/build/index.html")
         val htmlWebView = findViewById<View>(R.id.web) as WebView
@@ -36,7 +38,8 @@ class WebviewActivity : AppCompatActivity() {
         htmlWebView.loadUrl("file:///" + webFile.getAbsolutePath())
 
         fab.setOnClickListener { view ->
-            saveapp(true)
+            servr.appsave()
+//            saveapp(true)
 //            AppManagementActivity.closeserver()
             finish()
 //            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
@@ -49,39 +52,52 @@ class WebviewActivity : AppCompatActivity() {
         return true
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
-            R.id.action_settings -> {
-                val intent = Intent(applicationContext, AppManagementActivity::class.java)
-                startActivity(intent)
+            R.id.btnSave -> {
+                servr.appsave()
+                true
+            }
+            R.id.btnClose -> {
+                servr.appsave()
                 finish()
                 true
             }
-            R.id.action_favorite -> {
-                finish()
-                // User chose the "Favorite" action, mark the current item
-                // as a favorite...
+            R.id.btnSend -> {
+                var selectedname= File(AppManagementActivity.AppPath).name
+                var senditempath= appConfig.get(AppConstant.KEY_SENTITM_DIR)+"/"+selectedname+".zip"
+                val intent = Intent(applicationContext, ServerActivity::class.java).apply {
+                    putExtra("APP_PATH",senditempath)
+                }
+                startActivity(intent)
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
-fun saveapp(close: Boolean){
 
-    var client=Client(URI("ws://localhost:4444"))
-    client.connect()
-    System.out.println("connected to server...............................................")
-    val args = HashMap<String, String>()
-    args.put("method","saveobject")
-    val gson = Gson()
-    val json = gson.toJson(args)
-    client.send(json)
-   client.close()
+    override fun onDestroy() {
+        super.onDestroy()
+        AppManagementActivity.closeserver();
+    }
 
+    override fun onBackPressed() {
+        val alertDialog = AlertDialog.Builder(this).create()
+        alertDialog.setTitle("Alert")
+        alertDialog.setMessage("Do you want to exit?")
+        alertDialog.setButton(
+            AlertDialog.BUTTON_POSITIVE, "No",
+            DialogInterface.OnClickListener { dialog, which -> dialog.dismiss() }
+        )
+        alertDialog.setButton(
+            AlertDialog.BUTTON_NEGATIVE, "Yes",
+            DialogInterface.OnClickListener { dialog, which ->
+                servr.appsave()
+                finish()
+            }
+        )
+        alertDialog.show()
+    }
 
-}
 
 
 

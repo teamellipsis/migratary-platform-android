@@ -23,10 +23,9 @@ public class servr extends WebSocketServer {
     private static String serverstate;
     private static Object[]  newserverstate;
     private String send_data;
-    private DynamicApp app;
+    private static DynamicApp app;
     private Set<WebSocket> conns;
     private static boolean serveropen;
-
 
     public servr(DynamicApp app) {
         super(new InetSocketAddress(TCP_PORT));
@@ -41,24 +40,24 @@ public class servr extends WebSocketServer {
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
         conns.add(conn);
         System.out.println("New connection from " + conn.getRemoteSocketAddress().getAddress().getHostAddress());
-//        Gson gson=new Gson();
-//        String json = gson.toJson(app.saveState());
-//        conn.send(json);
+        Gson gson=new Gson();
+        String json = gson.toJson(app.saveState());
+        conn.send(json);
 
 
-        if(serverstate.equals("not_set")){
-            System.out.println("not_set state");
-            System.out.println("state is setted");
-            conn.send("not_set state");
+//        if(serverstate.equals("not_set")){
+//            System.out.println("not_set state");
+//            System.out.println("state is setted");
+//            conn.send("not_set state");
 //            Gson gson=new Gson();
 //            String json=gson.toJson(app.saveState());
 //            conn.send(json);
-        }else{
-            System.out.println("state is setted");
+//        }else{
+//            System.out.println("state is setted");
 //            Gson gson=new Gson();
 //            String json=gson.toJson(app.saveState());
 //            conn.send(json);
-        }
+//        }
         this.serveropen=true;
     }
 
@@ -178,5 +177,14 @@ public class servr extends WebSocketServer {
     public static boolean getserverstate(){
         return serveropen;
     }
+    public static void appsave() throws IOException{
+        File myFile1 = new File(AppManagementActivity.AppPath+"/app.ser");
+        System.out.println("saved app ..............................................");
+        FileOutputStream fileOut = new FileOutputStream(myFile1);
+        ObjectOutputStream out = new ObjectOutputStream(fileOut);
+        out.writeObject(app);
+        out.close();
+        fileOut.close();
 
+    }
 }

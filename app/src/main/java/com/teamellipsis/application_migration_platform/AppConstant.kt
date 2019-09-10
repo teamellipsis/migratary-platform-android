@@ -5,6 +5,8 @@ class AppConstant {
         const val FILE_KEY_CONFIG = ".config"
         const val KEY_NODE_MODULES_DIR = "node_modules_dir"
         const val KEY_WORKING_DIR = "working_dir"
+        const val KEY_APPS_DIR = "apps_dir"
+        const val KEY_SENTITM_DIR = "sentitem_dir"
         const val KEY_WORKING_DIR_TEMP = "working_dir_temp"
 
         const val NODE_MODULES = "node_modules"
