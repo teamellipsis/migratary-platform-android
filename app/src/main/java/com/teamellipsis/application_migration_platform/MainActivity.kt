@@ -138,6 +138,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
         appConfig.set(AppConstant.KEY_WORKING_DIR, currentdir.absolutePath)
         appConfig.set(AppConstant.KEY_APPS_DIR, currentdir.absolutePath+"/Migration/Apps")
         appConfig.set(AppConstant.KEY_SENTITM_DIR, currentdir.absolutePath+"/Migration/SentItems")
+        appConfig.set(AppConstant.KEY_RECEIVED_DIR, currentdir.absolutePath+"/Migration/RecvdItems")
         createFolder(currentdir.absolutePath)
         val intent = Intent(applicationContext, AppManagementActivity::class.java)
         startActivity(intent)
@@ -152,7 +153,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
     fun createFolder(path:String){
         val folder1 = File(path + "/Migration/Apps")
         val folder2 = File(path + "/Migration/SentItems")
-
+        val folder3 = File(path + "/Migration/RecvdItems")
         var success = true
 
         if (!folder2.exists()) {
@@ -161,6 +162,10 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
         if (!folder1.exists()) {
             success = folder1.mkdirs()
         }
+        if (!folder3.exists()) {
+            success = folder3.mkdirs()
+        }
+
 
     }
     fun createDir(name:String){

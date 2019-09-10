@@ -24,10 +24,12 @@ import java.net.URI
 
 class WebviewActivity : AppCompatActivity() {
     lateinit var appConfig: AppConfig
+    lateinit var fileSystem: FileSystem
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_webview)
         setSupportActionBar(toolbar)
+        fileSystem = FileSystem(applicationContext)
         appConfig = AppConfig(applicationContext)
         val filepath = intent.getStringExtra("WEB_VIEW_URL_FILE")
         val webFile = File( filepath,"/build/index.html")
@@ -63,7 +65,9 @@ class WebviewActivity : AppCompatActivity() {
                 true
             }
             R.id.btnSend -> {
+                servr.appsave()
                 var selectedname= File(AppManagementActivity.AppPath).name
+                fileSystem.zipDir(File(AppManagementActivity.AppPath), File(appConfig.get(AppConstant.KEY_SENTITM_DIR)+"/"+File(AppManagementActivity.AppPath).name + ".zip"))
                 var senditempath= appConfig.get(AppConstant.KEY_SENTITM_DIR)+"/"+selectedname+".zip"
                 val intent = Intent(applicationContext, ServerActivity::class.java).apply {
                     putExtra("APP_PATH",senditempath)

@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -154,8 +155,11 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
             Log.i("key apps dir", appsDir.listFiles().size.toString())
 
             for (file in appsDir.listFiles()) {
-                listItems.add(file.name)
-                listFiles.add(file)
+                if(file.isDirectory()){
+                    listItems.add(file.name)
+                    listFiles.add(file)
+                }
+
             }
 
             if (listItems.isNotEmpty()) {
@@ -228,8 +232,11 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
 
                             }
                             AppDialogOptions.Direct_send.ordinal -> {
+                                val packagesDir = File(appPath.parent)
+                                packagesDir.mkdirs()
+                                fileSystem.zipDir(appPath, File(appConfig.get(AppConstant.KEY_SENTITM_DIR)+"/"+appPath.name + ".zip"))
                                 val intent = Intent(applicationContext, ServerActivity::class.java).apply {
-                                    putExtra("APP_PATH",appPath.absolutePath )
+                                    putExtra("APP_PATH",appConfig.get(AppConstant.KEY_SENTITM_DIR)+"/"+appPath.name + ".zip")
                                 }
                                 startActivity(intent)
                             }
@@ -606,7 +613,8 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
 
     fun writeByte(bytes: ByteArray) {
         val file = Environment.getExternalStorageDirectory()
-        val save = File(file, "/"+filename)
+        val save = File(appConfig.get(AppConstant.KEY_RECEIVED_DIR)+"/"+filename)
+
 
         try {
             val out = FileOutputStream(save.absolutePath)
@@ -615,6 +623,8 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
             e.printStackTrace()
         } catch (e: IOException) {
             e.printStackTrace()
+        }finally {
+            fileSystem.unzip(save,File (appConfig.get(AppConstant.KEY_APPS_DIR)))
         }
 
     }

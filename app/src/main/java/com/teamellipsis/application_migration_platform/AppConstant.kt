@@ -7,6 +7,7 @@ class AppConstant {
         const val KEY_WORKING_DIR = "working_dir"
         const val KEY_APPS_DIR = "apps_dir"
         const val KEY_SENTITM_DIR = "sentitem_dir"
+        const val KEY_RECEIVED_DIR = "received_dir"
         const val KEY_WORKING_DIR_TEMP = "working_dir_temp"
 
         const val NODE_MODULES = "node_modules"

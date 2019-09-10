@@ -408,6 +408,7 @@ class FileSystem {
                     zipSubFolder(zipOut, file, basePathLength)
 
                 } else {
+
                     val relativePath = file.path.substring(basePathLength).substring(1) + "/"
                     val entry = ZipEntry(relativePath)
                     entry.time = file.lastModified()
