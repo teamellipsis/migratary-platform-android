@@ -100,7 +100,7 @@ class AppUnzipActivity : AppCompatActivity() {
         }
 
         override fun doInBackground(vararg argv: String): Boolean {
-            val targetDirectory = File(appConfig.get(AppConstant.KEY_WORKING_DIR))
+            val targetDirectory = File(appConfig.get(AppConstant.KEY_APPS_DIR))
 
             return fileSystem.unzipByIntent(uri, targetDirectory, this)
         }

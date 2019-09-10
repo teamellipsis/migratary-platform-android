@@ -196,9 +196,13 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
                             AppDialogOptions.Package.ordinal -> {
                                 val packagesDir = File(appPath.parent)
                                 packagesDir.mkdirs()
-                                fileSystem.zipDir(appPath, File(packagesDir.parent, "Sent/"+appPath.name + ".zip"))
+                                fileSystem.zipDir(appPath, File(packagesDir.parent, "SentItems/"+appPath.name + ".zip"))
                             }
                             AppDialogOptions.Send.ordinal -> {
+                                val packagesDir = File(appPath.parent)
+                                packagesDir.mkdirs()
+                                fileSystem.zipDir(appPath, File(packagesDir.parent, "SentItems/"+appPath.name + ".zip"))
+
                                 val file = File(appPath.parent, appPath.name + ".zip")
                                 val fileUri = FileProvider.getUriForFile(
                                     context,
