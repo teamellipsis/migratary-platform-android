@@ -10,12 +10,10 @@ import android.view.View
 import android.webkit.WebView
 import com.google.gson.Gson
 //import com.google.gson.Gson
-
 import kotlinx.android.synthetic.main.activity_webview.*
 //import org.java_websocket.client.WebSocketClient
 import java.io.File
 import java.net.URI
-
 //import java.net.URI
 //import org.java_websocket.drafts.Draft_6455
 //import org.java_websocket.handshake.ServerHandshake

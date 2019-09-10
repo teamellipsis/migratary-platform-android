@@ -76,7 +76,7 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
             }
 
             if (listItems.isNotEmpty()) {
-        listView.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems)
+                   listView.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems)
 //                listView.adapter = ArrayAdapter<String>(this, R.layout.app_list_item, R.id.listItemText, listItems)
             }
         }
@@ -190,7 +190,7 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
                             AppDialogOptions.Package.ordinal -> {
                                 val packagesDir = File(appPath.parent)
                                 packagesDir.mkdirs()
-                                fileSystem.zipDir(appPath, File(packagesDir, "toBeSent/"+appPath.name + ".zip"))
+                                fileSystem.zipDir(appPath, File(packagesDir.parent, "Sent/"+appPath.name + ".zip"))
                             }
                             AppDialogOptions.Send.ordinal -> {
                                 val file = File(appPath.parent, appPath.name + ".zip")

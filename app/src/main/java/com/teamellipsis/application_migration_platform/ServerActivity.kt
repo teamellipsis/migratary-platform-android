@@ -142,12 +142,10 @@ class ServerActivity : AppCompatActivity() {
 
     fun getMobileIP(): String? {
         try {
-            val en = NetworkInterface
-                .getNetworkInterfaces()
+            val en = NetworkInterface.getNetworkInterfaces()
             while (en.hasMoreElements()) {
                 val intf = en.nextElement() as NetworkInterface
-                val enumIpAddr = intf
-                    .inetAddresses
+                val enumIpAddr = intf.inetAddresses
                 while (enumIpAddr.hasMoreElements()) {
                     val inetAddress = enumIpAddr.nextElement()
                     if (!inetAddress.isLoopbackAddress) {
