@@ -52,9 +52,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
         txview.setText(currentdir.absolutePath)
         if (appsDir.exists()) {
             Log.i("App-Migratory-Platform", appsDir.listFiles().size.toString())
-
             for (file in appsDir.listFiles()) {
-
                 listItems.add(file.name)
                 listFiles.add(file)
             }
@@ -71,7 +69,9 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
     override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
 //        openApp(listFiles[position])
         currentdir=listFiles[position]
-        openDialog1(currentdir)
+        if(currentdir.isDirectory) {
+            openDialog1(currentdir)
+        }
 
     }
     fun openDialog1(appPath: File) {
