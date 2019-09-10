@@ -42,15 +42,16 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
     lateinit var st : ServerThred
     lateinit var appConfig: AppConfig
     var PERMISSIONS_WRITE_EXTERNAL_STORAGE = 0
+    lateinit var currentapp: String
     lateinit var messagefilelength: String
     lateinit var filename: String
     lateinit var output: PrintWriter
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_app_management)
         getPermission()
         appConfig = AppConfig(applicationContext)
+        Log.i("Appsdir",appConfig.get(AppConstant.KEY_APPS_DIR) )
         if (appConfig.get(AppConstant.KEY_WORKING_DIR).isEmpty()) {
             Log.i("App-Migratory-Platform", "first_time ")
             val intent = Intent(applicationContext, MainActivity::class.java)
@@ -65,10 +66,10 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
         fileSystem = FileSystem(applicationContext)
 //        var appConfig = AppConfig(applicationContext)
         context = this
-        AppManagementActivity.AppPath=appConfig.get(AppConstant.KEY_WORKING_DIR)
-        val appsDir = File(appConfig.get(AppConstant.KEY_WORKING_DIR))
+
+        val appsDir = File(appConfig.get(AppConstant.KEY_APPS_DIR))
         if (appsDir.exists()) {
-            Log.i("App-Migratory-Platform", appsDir.listFiles().size.toString())
+            Log.i("Apps dir", appsDir.listFiles().size.toString())
 
             for (file in appsDir.listFiles()) {
                 listItems.add(file.name)
@@ -79,6 +80,9 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
         listView.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems)
 //                listView.adapter = ArrayAdapter<String>(this, R.layout.app_list_item, R.id.listItemText, listItems)
             }
+        }else{
+            val intent = Intent(applicationContext, MainActivity::class.java)
+            startActivity(intent)
         }
 
 
@@ -126,7 +130,7 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
     override fun onResume() {
         super.onResume()
         Log.i("App-Migratory-Platform", appConfig.get(AppConstant.KEY_WORKING_DIR))
-        AppManagementActivity.AppPath=appConfig.get(AppConstant.KEY_WORKING_DIR)
+
         appConfig = AppConfig(applicationContext)
         if (appConfig.get(AppConstant.KEY_WORKING_DIR).isEmpty()) {
             Log.i("App-Migratory-Platform", "first_time ")
@@ -145,9 +149,9 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
 
         listItems.clear()
         listFiles.clear()
-        val appsDir = File(appConfig.get(AppConstant.KEY_WORKING_DIR))
+        val appsDir = File(appConfig.get(AppConstant.KEY_APPS_DIR))
         if (appsDir.exists()) {
-            Log.i("App-Migratory-Platform", appsDir.listFiles().size.toString())
+            Log.i("key apps dir", appsDir.listFiles().size.toString())
 
             for (file in appsDir.listFiles()) {
                 listItems.add(file.name)
@@ -169,6 +173,8 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
     }
 
     fun openDialog(appPath: File) {
+        currentapp=appPath.absolutePath
+        AppManagementActivity.AppPath=currentapp
         val alertDialog: AlertDialog? = this?.let {
             val builder = AlertDialog.Builder(it)
             builder.apply {
@@ -299,42 +305,6 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
         startActivity(intent)
     }
 
-    fun isAppUp(view: View) {
-        val url = URL("http://localhost:3000/__ping")
-        HttpAsyncTask().execute(url)
-
-//        val url = URL("http://localhost:3000")
-//        val urlConnection = url.openConnection() as HttpURLConnection
-//        try {
-//            val bufferedInputStream = BufferedInputStream(urlConnection.getInputStream())
-//            val BUFFER_SIZE = 2048
-//            val data = ByteArray(BUFFER_SIZE)
-//            var count: Int
-//            while ({ count = bufferedInputStream.read(data, 0, BUFFER_SIZE);count }() != -1) {
-//                Log.i("App-Migratory-Platform", data.toString())
-//            }
-//            bufferedInputStream.close()
-////            readStream(bufferedInputStream)
-//        } catch (e: Exception) {
-//            Log.i("App-Migratory-Platform", e.message)
-//            e.printStackTrace()
-//        } finally {
-//            urlConnection.disconnect()
-//        }
-    }
-
-//    external fun startNodeWithArguments(vararg argv: String): Integer
-//
-//    companion object {
-//        init {
-//            try {
-//                System.loadLibrary("native-lib")
-//                System.loadLibrary("node")
-//            } catch (error: UnsatisfiedLinkError) {
-//                error.printStackTrace()
-//            }
-//        }
-//    }
 
     private inner class HttpAsyncTask : AsyncTask<URL, Int, Long>() {
         override fun doInBackground(vararg urls: URL): Long? {
@@ -379,31 +349,22 @@ class AppManagementActivity : AppCompatActivity(), AdapterView.OnItemClickListen
     }
 
     fun dex_loader(path:String): DexClassLoader {
-//        val folder1 = Environment.getExternalStorageDirectory()
-        val myFile1 = File(path, "Todo.dex")
+        val myFile1 = File(path, File(path).name+"_src.dex")
+
         val getDirectoryPath = myFile1.getAbsolutePath()
         return DexClassLoader(getDirectoryPath, cacheDir.absolutePath, null, classLoader)
     }
 
     fun deserialize(path:String) : DynamicApp {
 //        val folderPath = Environment.getExternalStorageDirectory()
-        val myFile1 = File(path, "todo.ser")
+        val myFile1 = File(path, "app.ser")
         val fileIn = FileInputStream(myFile1)
         val obl = ObjectInputStreamWithLoader(fileIn, dex_loader(path))
         val e1 = obl.readObject() as DynamicApp
         obl.close()
         return e1
     }
-    fun saveobject(path:String){
-//        val folder1 = Environment.getExternalStorageDirectory()
-        val myFile1 = File(path, "out/employee.ser")
-        val fileOut = FileOutputStream(myFile1)
-        val out = ObjectOutputStream(fileOut)
-        out.writeObject(obj)
-        out.close()
-        fileOut.close()
 
-    }
     override fun onBackPressed() {
 //        super.onBackPressed()
         val alertDialog = AlertDialog.Builder(this).create()

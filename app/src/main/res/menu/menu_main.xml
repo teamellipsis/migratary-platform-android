@@ -3,13 +3,19 @@
       xmlns:tools="http://schemas.android.com/tools"
       tools:context="com.teamellipsis.filebrows.MainActivity">
 
-    <item android:id="@+id/action_settings"
-          android:title="Settings"
+    <item android:id="@+id/btnSave"
+          android:title="Save"
           android:orderInCategory="100"
           app:showAsAction="never"/>
     <item
-            android:id="@+id/action_favorite"
-            android:title="Save"
+            android:id="@+id/btnSend"
+            android:title="Send"
             android:orderInCategory="100"
             app:showAsAction="never"/>
+
+    <item android:id="@+id/btnClose"
+          android:title="Close App"
+          android:orderInCategory="100"
+          app:showAsAction="never"/>
+
 </menu>

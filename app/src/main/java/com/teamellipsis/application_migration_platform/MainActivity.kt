@@ -52,7 +52,9 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
         txview.setText(currentdir.absolutePath)
         if (appsDir.exists()) {
             Log.i("App-Migratory-Platform", appsDir.listFiles().size.toString())
+
             for (file in appsDir.listFiles()) {
+
                 listItems.add(file.name)
                 listFiles.add(file)
             }
@@ -88,6 +90,11 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
                 arrayAdapter.setNotifyOnChange(true)
                 txview.setText(currentdir.absolutePath)
 //                listView.adapter = ArrayAdapter<String>(this, R.layout.app_list_item, R.id.listItemText, listItems)
+            }else{
+                var arrayAdapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems)
+                listView.adapter = arrayAdapter
+                arrayAdapter.setNotifyOnChange(true)
+                txview.setText(currentdir.absolutePath)
             }
         }
     }
@@ -129,6 +136,8 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
 
     fun selectFolder(view: View) {
         appConfig.set(AppConstant.KEY_WORKING_DIR, currentdir.absolutePath)
+        appConfig.set(AppConstant.KEY_APPS_DIR, currentdir.absolutePath+"/Migration/Apps")
+        appConfig.set(AppConstant.KEY_SENTITM_DIR, currentdir.absolutePath+"/Migration/SentItems")
         createFolder(currentdir.absolutePath)
         val intent = Intent(applicationContext, AppManagementActivity::class.java)
         startActivity(intent)
@@ -141,8 +150,8 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
 
 
     fun createFolder(path:String){
-        val folder1 = File(path + "/app/Apps")
-        val folder2 = File(path + "/app/Sent")
+        val folder1 = File(path + "/Migration/Apps")
+        val folder2 = File(path + "/Migration/SentItems")
 
         var success = true
 

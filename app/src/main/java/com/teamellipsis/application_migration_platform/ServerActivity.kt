@@ -10,6 +10,9 @@ import android.util.Log
 import android.widget.TextView
 import java.io.*
 import java.net.*
+import java.net.NetworkInterface.getNetworkInterfaces
+
+
 
 class ServerActivity : AppCompatActivity() {
     private var ip: TextView? = null
@@ -54,7 +57,7 @@ class ServerActivity : AppCompatActivity() {
                     val localPort = serverSocket!!.getLocalPort()
                     handler.post {
 
-                        ip!!.setText(getMobileIP())
+                        ip!!.setText(getipv4())
                         port!!.setText(Integer.toString(localPort))
                         status !!.setText("waiting for clients")
                     }
@@ -160,6 +163,34 @@ class ServerActivity : AppCompatActivity() {
         }
 
         return null
+    }
+
+    fun getipv4(): String {
+        var ip = ""
+        try {
+            val interfaces = NetworkInterface.getNetworkInterfaces()
+            while (interfaces.hasMoreElements()) {
+                val iface = interfaces.nextElement()
+                // filters out 127.0.0.1 and inactive interfaces
+                if (iface.isLoopback || !iface.isUp)
+                    continue
+
+                val addresses = iface.inetAddresses
+                while (addresses.hasMoreElements()) {
+                    val addr = addresses.nextElement()
+
+                    // *EDIT*
+                    if (addr is Inet6Address) continue
+
+                    ip = addr.hostAddress
+                    println(ip)
+                }
+            }
+        } catch (e: SocketException) {
+            throw RuntimeException(e)
+        }
+
+        return ip
     }
 
     override fun onBackPressed() {
